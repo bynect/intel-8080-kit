@@ -52,7 +52,7 @@ def main():
             f2.write(f"{' ' * 4}while i < bin.len() {{\n")
             f2.write(f"{' ' * 4 * 2}ops.push(match bin[i] {{\n")
 
-            o.write("use std::{mem, fmt};\n\n")
+            o.write("use std::{fmt, mem};\n\n")
             o.write("#[allow(non_camel_case_types)]\n")
             o.write("#[repr(u8)]\n")
             o.write("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")

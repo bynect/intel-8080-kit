@@ -23,7 +23,7 @@ fn main() {
                     let mut i = 0;
                     while i < out.len() {
                         let op = out[i];
-                        println!("{:04x}{:<6}{:?}", i, "", op);
+                        println!("{:04}{:<6}{:?}", i, "", op);
                         i += op.size();
                     }
                 } else {
@@ -34,10 +34,12 @@ fn main() {
                     println!("PC{:<8}OPCODE", "");
 
                     let mut i = 0;
+                    let mut pc = 0;
                     while i < out.len() {
                         let op = out[i];
-                        println!("{:04x}{:<6}{:?}", i, "", op);
-                        i += op.size();
+                        println!("{:04}{:<6}{:?}", pc, "", op);
+                        pc += op.size();
+                        i += 1;
                     }
                 } else {
                     eprintln!("Erroneous binary file.");
