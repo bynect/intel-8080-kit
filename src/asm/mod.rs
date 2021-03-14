@@ -2,6 +2,7 @@
 //! don't modify this file directly, instead run `python3 ./util/gen.py`.
 
 use super::op::*;
+pub mod lexer;
 
 pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
     let mut bin = Vec::new();
@@ -156,8 +157,10 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
             Opcode::Cma => {
                 bin.push(0x2fu8);
             }
-            Opcode::LxiSpD16 => {
+            Opcode::LxiSp(b2, b1) => {
                 bin.push(0x31u8);
+                bin.push(b1);
+                bin.push(b2);
             }
             Opcode::Sta(s1) => {
                 bin.push(0x32u8);
@@ -617,8 +620,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
             Opcode::PushB => {
                 bin.push(0xc5u8);
             }
-            Opcode::AdiD8 => {
+            Opcode::Adi(b1) => {
                 bin.push(0xc6u8);
+                bin.push(b1);
             }
             Opcode::Rst0 => {
                 bin.push(0xc7u8);
@@ -647,8 +651,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
                 bin.push(b[0]);
                 bin.push(b[1]);
             }
-            Opcode::AciD8 => {
+            Opcode::Aci(b1) => {
                 bin.push(0xceu8);
+                bin.push(b1);
             }
             Opcode::Rst1 => {
                 bin.push(0xcfu8);
@@ -665,8 +670,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
                 bin.push(b[0]);
                 bin.push(b[1]);
             }
-            Opcode::OutD8 => {
+            Opcode::Out(b1) => {
                 bin.push(0xd3u8);
+                bin.push(b1);
             }
             Opcode::Cnc(s1) => {
                 bin.push(0xd4u8);
@@ -677,8 +683,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
             Opcode::PushD => {
                 bin.push(0xd5u8);
             }
-            Opcode::SuiD8 => {
+            Opcode::Sui(b1) => {
                 bin.push(0xd6u8);
+                bin.push(b1);
             }
             Opcode::Rst2 => {
                 bin.push(0xd7u8);
@@ -692,8 +699,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
                 bin.push(b[0]);
                 bin.push(b[1]);
             }
-            Opcode::InD8 => {
+            Opcode::In(b1) => {
                 bin.push(0xdbu8);
+                bin.push(b1);
             }
             Opcode::Cc(s1) => {
                 bin.push(0xdcu8);
@@ -701,8 +709,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
                 bin.push(b[0]);
                 bin.push(b[1]);
             }
-            Opcode::SbiD8 => {
+            Opcode::Sbi(b1) => {
                 bin.push(0xdeu8);
+                bin.push(b1);
             }
             Opcode::Rst3 => {
                 bin.push(0xdfu8);
@@ -731,8 +740,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
             Opcode::PushH => {
                 bin.push(0xe5u8);
             }
-            Opcode::AniD8 => {
+            Opcode::Ani(b1) => {
                 bin.push(0xe6u8);
+                bin.push(b1);
             }
             Opcode::Rst4 => {
                 bin.push(0xe7u8);
@@ -758,8 +768,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
                 bin.push(b[0]);
                 bin.push(b[1]);
             }
-            Opcode::XriD8 => {
+            Opcode::Xri(b1) => {
                 bin.push(0xeeu8);
+                bin.push(b1);
             }
             Opcode::Rst5 => {
                 bin.push(0xefu8);
@@ -788,8 +799,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
             Opcode::PushPsw => {
                 bin.push(0xf5u8);
             }
-            Opcode::OriD8 => {
+            Opcode::Ori(b1) => {
                 bin.push(0xf6u8);
+                bin.push(b1);
             }
             Opcode::Rst6 => {
                 bin.push(0xf7u8);
@@ -815,8 +827,9 @@ pub fn codegen(ops: &[Opcode]) -> Vec<u8> {
                 bin.push(b[0]);
                 bin.push(b[1]);
             }
-            Opcode::CpiD8 => {
+            Opcode::Cpi(b1) => {
                 bin.push(0xfeu8);
+                bin.push(b1);
             }
             Opcode::Rst7 => {
                 bin.push(0xffu8);

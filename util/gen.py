@@ -64,8 +64,10 @@ def main():
 
                     op2 = op.replace("__D16", "")
                     op2 = op2.replace("_D16", "")
+                    op2 = op2.replace("D16", "")
                     op2 = op2.replace("__D8", "")
                     op2 = op2.replace("_D8", "")
+                    op2 = op2.replace("D8", "")
                     op2 = op2.replace("_adr", "")
 
                     o.write(f"{' ' * 4}{op2} = {m[0]},\n")
@@ -106,8 +108,10 @@ def main():
 
                     op2 = op.replace("__D16", "")
                     op2 = op2.replace("_D16", "")
+                    op2 = op2.replace("D16", "")
                     op2 = op2.replace("__D8", "")
                     op2 = op2.replace("_D8", "")
+                    op2 = op2.replace("D8", "")
                     op2 = op2.replace("_adr", "")
 
                     o.write(f"{' ' * 4 * 3}{raw_opcode}::{op2} => {m[2]},\n")
@@ -168,8 +172,10 @@ def main():
 
                     op = op.replace("__D16", "(u8, u8)")
                     op = op.replace("_D16", "(u8, u8)")
+                    op = op.replace("D16", "(u8, u8)")
                     op = op.replace("__D8", "(u8)")
                     op = op.replace("_D8", "(u8)")
+                    op = op.replace("D8", "(u8)")
                     op = op.replace("Adr", "(u16)")
 
                     op = op.replace("_B", "B")
@@ -234,8 +240,10 @@ def main():
 
                 op = op.replace("__D16", "(_, _)")
                 op = op.replace("_D16", "(_, _)")
+                op = op.replace("D16", "(_, _)")
                 op = op.replace("__D8", "(_)")
                 op = op.replace("_D8", "(_)")
+                op = op.replace("D8", "(_)")
                 op = op.replace("Adr", "(_)")
 
                 op = op.replace("_B", "B")
@@ -253,7 +261,7 @@ def main():
 
     with open(asm_output, "w") as f:
         f.write(header.format(asm_output, op_input))
-        f.write("use super::op::*;\n\n")
+        f.write("use super::op::*;\npub mod lexer;\n\n")
 
         f.write(f"pub fn codegen(ops: &[{wrap_opcode}]) -> Vec<u8> {{\n")
         f.write(f"{' ' * 4}let mut bin = Vec::new();\n\n")
@@ -268,8 +276,10 @@ def main():
 
                 op = op.replace("__D16", "(b2, b1)")
                 op = op.replace("_D16", "(b2, b1)")
+                op = op.replace("D16", "(b2, b1)")
                 op = op.replace("__D8", "(b1)")
                 op = op.replace("_D8", "(b1)")
+                op = op.replace("D8", "(b1)")
                 op = op.replace("Adr", "(s1)")
 
                 op = op.replace("_B", "B")
