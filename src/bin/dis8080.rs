@@ -18,14 +18,27 @@ fn main() {
 
             if raw {
                 if let Ok(out) = disassemble_raw(&bin) {
-                    out.iter().for_each(|&x| print!("{} ", x));
-                    println!("");
+                    println!("PC{:<8}OPCODE", "");
+
+                    let mut i = 0;
+                    while i < out.len() {
+                        let op = out[i];
+                        println!("{:04x}{:<6}{:?}", i, "", op);
+                        i += op.size();
+                    }
                 } else {
                     eprintln!("Erroneous binary file.");
                 }
             } else {
                 if let Ok(out) = disassemble(&bin) {
-                    println!("{:?}", out);
+                    println!("PC{:<8}OPCODE", "");
+
+                    let mut i = 0;
+                    while i < out.len() {
+                        let op = out[i];
+                        println!("{:04x}{:<6}{:?}", i, "", op);
+                        i += op.size();
+                    }
                 } else {
                     eprintln!("Erroneous binary file.");
                 }
