@@ -17,9 +17,12 @@ fn main() {
             let bin = fs::read(arg).unwrap();
 
             if raw {
-                let out = disassemble_raw(&bin);
-                out.iter().for_each(|&x| print!("{:02x} ", x));
-                println!("\n{:?}", bin);
+                if let Ok(out) = disassemble_raw(&bin) {
+                    out.iter().for_each(|&x| print!("{:02x} ", x));
+                    println!("\n{:?}", bin);
+                } else {
+                    eprintln!("Erroneous binary file.");
+                }
             } else {
                 if let Ok(out) = disassemble(&bin) {
                     println!("{:?}", out);

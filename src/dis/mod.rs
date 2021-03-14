@@ -2,7 +2,7 @@ use super::op::*;
 use std::fmt;
 
 #[derive(Debug, Clone)]
-pub struct OpError(u8);
+pub struct OpError(usize);
 
 impl fmt::Display for OpError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -10,7 +10,7 @@ impl fmt::Display for OpError {
     }
 }
 
-pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
+pub fn disassemble_raw(bin: &Vec<u8>) -> Result<Vec<RawOpcode>, OpError> {
     let mut ops = Vec::new();
 
     let mut i = 0;
@@ -22,7 +22,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x01 => {
                 i += 3;
-                RawOpcode::LXI_B
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::LXI_B
+                }
             }
             0x02 => {
                 i += 1;
@@ -42,7 +46,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x06 => {
                 i += 2;
-                RawOpcode::MVI_B
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_B
+                }
             }
             0x07 => {
                 i += 1;
@@ -70,7 +78,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x0e => {
                 i += 2;
-                RawOpcode::MVI_C
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_C
+                }
             }
             0x0f => {
                 i += 1;
@@ -78,7 +90,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x11 => {
                 i += 3;
-                RawOpcode::LXI_D
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::LXI_D
+                }
             }
             0x12 => {
                 i += 1;
@@ -98,7 +114,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x16 => {
                 i += 2;
-                RawOpcode::MVI_D
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_D
+                }
             }
             0x17 => {
                 i += 1;
@@ -126,7 +146,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x1e => {
                 i += 2;
-                RawOpcode::MVI_E
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_E
+                }
             }
             0x1f => {
                 i += 1;
@@ -134,11 +158,19 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x21 => {
                 i += 3;
-                RawOpcode::LXI_H
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::LXI_H
+                }
             }
             0x22 => {
                 i += 3;
-                RawOpcode::SHLD
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::SHLD
+                }
             }
             0x23 => {
                 i += 1;
@@ -154,7 +186,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x26 => {
                 i += 2;
-                RawOpcode::MVI_H
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_H
+                }
             }
             0x27 => {
                 i += 1;
@@ -166,7 +202,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x2a => {
                 i += 3;
-                RawOpcode::LHLD
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::LHLD
+                }
             }
             0x2b => {
                 i += 1;
@@ -182,7 +222,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x2e => {
                 i += 2;
-                RawOpcode::MVI_L
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_L
+                }
             }
             0x2f => {
                 i += 1;
@@ -190,11 +234,19 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x31 => {
                 i += 3;
-                RawOpcode::LXI_SP
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::LXI_SP
+                }
             }
             0x32 => {
                 i += 3;
-                RawOpcode::STA
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::STA
+                }
             }
             0x33 => {
                 i += 1;
@@ -210,7 +262,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x36 => {
                 i += 2;
-                RawOpcode::MVI_M
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_M
+                }
             }
             0x37 => {
                 i += 1;
@@ -222,7 +278,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x3a => {
                 i += 3;
-                RawOpcode::LDA
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::LDA
+                }
             }
             0x3b => {
                 i += 1;
@@ -238,7 +298,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0x3e => {
                 i += 2;
-                RawOpcode::MVI_A
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::MVI_A
+                }
             }
             0x3f => {
                 i += 1;
@@ -766,15 +830,27 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xc2 => {
                 i += 3;
-                RawOpcode::JNZ
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JNZ
+                }
             }
             0xc3 => {
                 i += 3;
-                RawOpcode::JMP
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JMP
+                }
             }
             0xc4 => {
                 i += 3;
-                RawOpcode::CNZ
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CNZ
+                }
             }
             0xc5 => {
                 i += 1;
@@ -782,7 +858,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xc6 => {
                 i += 2;
-                RawOpcode::ADI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::ADI
+                }
             }
             0xc7 => {
                 i += 1;
@@ -798,19 +878,35 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xca => {
                 i += 3;
-                RawOpcode::JZ
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JZ
+                }
             }
             0xcc => {
                 i += 3;
-                RawOpcode::CZ
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CZ
+                }
             }
             0xcd => {
                 i += 3;
-                RawOpcode::CALL
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CALL
+                }
             }
             0xce => {
                 i += 2;
-                RawOpcode::ACI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::ACI
+                }
             }
             0xcf => {
                 i += 1;
@@ -826,15 +922,27 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xd2 => {
                 i += 3;
-                RawOpcode::JNC
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JNC
+                }
             }
             0xd3 => {
                 i += 2;
-                RawOpcode::OUT
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::OUT
+                }
             }
             0xd4 => {
                 i += 3;
-                RawOpcode::CNC
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CNC
+                }
             }
             0xd5 => {
                 i += 1;
@@ -842,7 +950,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xd6 => {
                 i += 2;
-                RawOpcode::SUI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::SUI
+                }
             }
             0xd7 => {
                 i += 1;
@@ -854,19 +966,35 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xda => {
                 i += 3;
-                RawOpcode::JC
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JC
+                }
             }
             0xdb => {
                 i += 2;
-                RawOpcode::IN
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::IN
+                }
             }
             0xdc => {
                 i += 3;
-                RawOpcode::CC
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CC
+                }
             }
             0xde => {
                 i += 2;
-                RawOpcode::SBI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::SBI
+                }
             }
             0xdf => {
                 i += 1;
@@ -882,7 +1010,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xe2 => {
                 i += 3;
-                RawOpcode::JPO
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JPO
+                }
             }
             0xe3 => {
                 i += 1;
@@ -890,7 +1022,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xe4 => {
                 i += 3;
-                RawOpcode::CPO
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CPO
+                }
             }
             0xe5 => {
                 i += 1;
@@ -898,7 +1034,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xe6 => {
                 i += 2;
-                RawOpcode::ANI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::ANI
+                }
             }
             0xe7 => {
                 i += 1;
@@ -914,7 +1054,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xea => {
                 i += 3;
-                RawOpcode::JPE
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JPE
+                }
             }
             0xeb => {
                 i += 1;
@@ -922,11 +1066,19 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xec => {
                 i += 3;
-                RawOpcode::CPE
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CPE
+                }
             }
             0xee => {
                 i += 2;
-                RawOpcode::XRI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::XRI
+                }
             }
             0xef => {
                 i += 1;
@@ -942,7 +1094,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xf2 => {
                 i += 3;
-                RawOpcode::JP
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JP
+                }
             }
             0xf3 => {
                 i += 1;
@@ -950,7 +1106,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xf4 => {
                 i += 3;
-                RawOpcode::CP
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CP
+                }
             }
             0xf5 => {
                 i += 1;
@@ -958,7 +1118,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xf6 => {
                 i += 2;
-                RawOpcode::ORI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::ORI
+                }
             }
             0xf7 => {
                 i += 1;
@@ -974,7 +1138,11 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xfa => {
                 i += 3;
-                RawOpcode::JM
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::JM
+                }
             }
             0xfb => {
                 i += 1;
@@ -982,11 +1150,19 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
             }
             0xfc => {
                 i += 3;
-                RawOpcode::CM
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CM
+                }
             }
             0xfe => {
                 i += 2;
-                RawOpcode::CPI
+                if i >= bin.len() {
+                    return Err(OpError(i - bin.len()));
+                } else {
+                    RawOpcode::CPI
+                }
             }
             0xff => {
                 i += 1;
@@ -999,7 +1175,7 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<RawOpcode> {
         });
     }
 
-    ops
+    Ok(ops)
 }
 
 pub fn disassemble(bin: &Vec<u8>) -> Result<Vec<Opcode>, OpError> {

@@ -42,7 +42,7 @@ fn test_mult() -> std::io::Result<()> {
 
     let raw = disassemble_raw(&bin);
     assert_eq_vec(
-        &raw,
+        &raw.unwrap(),
         &vec![
             0x06u8, 0x1eu8, 0x79u8, 0x1fu8, 0x4fu8, 0x1du8, 0xcau8, 0x78u8, 0xd2u8, 0x82u8, 0x1fu8,
             0x47u8, 0xc3u8, 0xc9u8,

@@ -21,7 +21,7 @@ def main():
         with open("src/dis/mod.rs", "w") as f2:
             f2.write("use super::op::*;\nuse std::fmt;\n\n")
             f2.write("#[derive(Debug, Clone)]\n")
-            f2.write(f"pub struct {opcode_err}(u8);\n\n")
+            f2.write(f"pub struct {opcode_err}(usize);\n\n")
             f2.write(f"impl fmt::Display for {opcode_err} {{\n")
             f2.write(
                 f"{' ' * 4}fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {{\n"
@@ -29,7 +29,9 @@ def main():
             f2.write(f"{' ' * 4 * 2}write!(f, \"expected {{}} bytes\", self.0)\n")
             f2.write(f"{' ' * 4}}}\n}}\n\n")
 
-            f2.write(f"pub fn disassemble_raw(bin: &Vec<u8>) -> Vec<{raw_opcode}> {{\n")
+            f2.write(
+                f"pub fn disassemble_raw(bin: &Vec<u8>) -> Result<Vec<{raw_opcode}>, {opcode_err}> {{\n"
+            )
             f2.write(f"{' ' * 4}let mut ops = Vec::new();\n\n")
             f2.write(f"{' ' * 4}let mut i = 0;\n")
             f2.write(f"{' ' * 4}while i < bin.len() {{\n")
@@ -56,12 +58,23 @@ def main():
                     f2.write(f"{' ' * 4 * 3}{m[0]} => {{\n{' ' * 4 * 4}i += ")
                     if op.endswith("D16") or op.endswith("_adr"):
                         f2.write(
-                            f"3;\n{' ' * 4 * 4}{raw_opcode}::{op2}\n{' ' * 4 * 3}}}\n"
+                            f"3;\n{' ' * 4 * 4}if i >= bin.len() {{\n{' ' * 4 * 5}return Err(OpError(i - bin.len()));\n"
                         )
+
+                        f2.write(
+                            f"{' ' * 4 * 4}}} else {{\n{' ' * 4 * 5}{raw_opcode}::{op2}\n{' ' * 4 * 4}}}\n"
+                        )
+                        f2.write(f"{' ' * 4 * 3}}}\n")
+
                     elif op.endswith("D8"):
                         f2.write(
-                            f"2;\n{' ' * 4 * 4}{raw_opcode}::{op2}\n{' ' * 4 * 3}}}\n"
+                            f"2;\n{' ' * 4 * 4}if i >= bin.len() {{\n{' ' * 4 * 5}return Err(OpError(i - bin.len()));\n"
                         )
+
+                        f2.write(
+                            f"{' ' * 4 * 4}}} else {{\n{' ' * 4 * 5}{raw_opcode}::{op2}\n{' ' * 4 * 4}}}\n"
+                        )
+                        f2.write(f"{' ' * 4 * 3}}}\n")
                     else:
                         f2.write(
                             f"1;\n{' ' * 4 * 4}{raw_opcode}::{op2}\n{' ' * 4 * 3}}}\n"
@@ -116,7 +129,7 @@ def main():
             f2.write(f"1;\n{' ' * 4 * 4}{raw_opcode}::NOP\n{' ' * 4 * 3}}}\n")
 
             f2.write(f"{' ' * 4 * 2}}});\n")
-            f2.write(f"{' ' * 4}}}\n\n{' ' * 4}ops\n}}\n\n")
+            f2.write(f"{' ' * 4}}}\n\n{' ' * 4}Ok(ops)\n}}\n\n")
 
             o.write("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
             o.write(f"pub enum {wrap_opcode} {{\n")
