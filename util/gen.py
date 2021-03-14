@@ -7,7 +7,7 @@ import re
 
 
 def main():
-    comp = re.compile(r"^(0x[\da-f]+)	([\w \,]*)", re.M | re.I)
+    comp = re.compile(r"^(0x[\da-f]+)	([\w \,]*)	(\d)", re.M | re.I)
     match = None
 
     op_input = "util/opcodes.txt"
@@ -95,6 +95,24 @@ def main():
                         )
 
             o.write("}\n\n")
+            o.write(f"impl {raw_opcode} {{\n")
+            o.write(f"{' ' * 4}pub fn size(&self) -> usize {{\n")
+            o.write(f"{' ' * 4 * 2}match *self {{\n")
+
+            for m in match:
+                if m[1] != "":
+                    op = m[1].replace(" ", "_").replace(",", "_")
+
+                    op2 = op.replace("__D16", "")
+                    op2 = op2.replace("_D16", "")
+                    op2 = op2.replace("__D8", "")
+                    op2 = op2.replace("_D8", "")
+                    op2 = op2.replace("_adr", "")
+
+                    o.write(f"{' ' * 4 * 3}{raw_opcode}::{op2} => {m[2]},\n")
+
+            o.write(f"{' ' * 4 * 2}}}\n{' ' * 4}}}\n}}\n\n")
+
             o.write(f"impl From<u8> for {raw_opcode} {{\n")
             o.write(f"{' ' * 4}fn from(t: u8) -> {raw_opcode} {{\n")
             o.write(f"{' ' * 4 * 2}match t {{\n")
@@ -164,12 +182,12 @@ def main():
 
                     o.write(f"{' ' * 4}{op},\n")
 
-                    op2 = op.replace("(u8, u8)", "(*b1, *b2)")
+                    op2 = op.replace("(u8, u8)", "(*b2, *b1)")
                     op2 = op2.replace("(u8)", "(*b1)")
                     op2 = op2.replace("(u16)", "(u16::from_le_bytes([*b1, *b2]))")
 
                     f2.write(f"{' ' * 4 * 3}{m[0]} => {{\n{' ' * 4 * 4}i += ")
-                    if op2.endswith("(*b1, *b2)") or op2.endswith(
+                    if op2.endswith("(*b2, *b1)") or op2.endswith(
                         "(u16::from_le_bytes([*b1, *b2]))"
                     ):
                         f2.write(

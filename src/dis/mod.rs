@@ -1195,7 +1195,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::LxiB(*b1, *b2)
+                Opcode::LxiB(*b2, *b1)
             }
             0x02 => {
                 i += 1;
@@ -1255,7 +1255,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::LxiD(*b1, *b2)
+                Opcode::LxiD(*b2, *b1)
             }
             0x12 => {
                 i += 1;
@@ -1315,7 +1315,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::LxiH(*b1, *b2)
+                Opcode::LxiH(*b2, *b1)
             }
             0x22 => {
                 i += 3;
