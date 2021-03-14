@@ -275,23 +275,7 @@ impl Into<u8> for RawOpcode {
 
 impl fmt::Display for RawOpcode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", *self as u8)
-    }
-}
-
-impl fmt::LowerHex for RawOpcode {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let val = *self as u8;
-
-        fmt::LowerHex::fmt(&val, f)
-    }
-}
-
-impl fmt::UpperHex for RawOpcode {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let val = *self as u8;
-
-        fmt::UpperHex::fmt(&val, f)
+        write!(f, "{:?}(0x{:02x?})", self, *self as u8)
     }
 }
 

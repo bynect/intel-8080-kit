@@ -106,23 +106,7 @@ def main():
             o.write(
                 f"{' ' * 4}fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {{\n"
             )
-            o.write(f"{' ' * 4 * 2}write!(f, \"{{}}\", *self as u8)\n")
-            o.write(f"{' ' * 4}}}\n}}\n\n")
-
-            o.write(f"impl fmt::LowerHex for {raw_opcode} {{\n")
-            o.write(
-                f"{' ' * 4}fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {{\n"
-            )
-            o.write(f"{' ' * 4 * 2}let val = *self as u8;\n\n")
-            o.write(f"{' ' * 4 * 2}fmt::LowerHex::fmt(&val, f)\n")
-            o.write(f"{' ' * 4}}}\n}}\n\n")
-
-            o.write(f"impl fmt::UpperHex for {raw_opcode} {{\n")
-            o.write(
-                f"{' ' * 4}fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {{\n"
-            )
-            o.write(f"{' ' * 4 * 2}let val = *self as u8;\n\n")
-            o.write(f"{' ' * 4 * 2}fmt::UpperHex::fmt(&val, f)\n")
+            o.write(f"{' ' * 4 * 2}write!(f, \"{{:?}}(0x{{:02x?}})\", self, *self as u8)\n")
             o.write(f"{' ' * 4}}}\n}}\n\n")
 
             f2.write(f"{' ' * 4 * 3}_ => {{\n{' ' * 4 * 4}i += ")
