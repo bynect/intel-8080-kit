@@ -221,7 +221,35 @@ def main():
             f2.write(f"{' ' * 4 * 2}}});\n")
             f2.write(f"{' ' * 4}}}\n\n{' ' * 4}Ok(ops)\n}}\n")
 
-        o.write("}\n")
+        o.write("}\n\n")
+        o.write(f"impl {wrap_opcode} {{\n")
+        o.write(f"{' ' * 4}pub fn size(&self) -> usize {{\n")
+        o.write(f"{' ' * 4 * 2}match *self {{\n")
+
+        for m in match:
+            if m[1] != "":
+                op = m[1].replace(" ", "_").replace(",", "_").lower()
+                op = humps.pascalize(op)
+
+                op = op.replace("__D16", "(_, _)")
+                op = op.replace("_D16", "(_, _)")
+                op = op.replace("__D8", "(_)")
+                op = op.replace("_D8", "(_)")
+                op = op.replace("Adr", "(_)")
+
+                op = op.replace("_B", "B")
+                op = op.replace("_C", "C")
+                op = op.replace("_D", "D")
+                op = op.replace("_E", "E")
+                op = op.replace("_H", "H")
+                op = op.replace("_L", "L")
+                op = op.replace("_M", "M")
+                op = op.replace("_A", "A")
+
+                o.write(f"{' ' * 4 * 3}{wrap_opcode}::{op} => {m[2]},\n")
+
+        o.write(f"{' ' * 4 * 2}}}\n{' ' * 4}}}\n}}\n")
+
 
 
 if __name__ == "__main__":
