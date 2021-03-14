@@ -38,7 +38,7 @@ def main():
             o.write("use std::fmt;\n\n")
             o.write("#[allow(non_camel_case_types)]\n")
             o.write("#[repr(u8)]\n")
-            o.write("#[derive(Debug, Clone, Copy)]\n")
+            o.write("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
             o.write(f"pub enum {raw_opcode} {{\n")
 
             for m in match:
@@ -68,6 +68,23 @@ def main():
                         )
 
             o.write("}\n\n")
+            o.write(f"impl From<u8> for {raw_opcode} {{\n")
+            o.write(f"{' ' * 4}fn from(t: u8) -> {raw_opcode} {{\n")
+            o.write(f"{' ' * 4 * 2}match t {{\n")
+            o.write(f"{' ' * 4 * 3}0x08 | 0x10 | 0x18 | 0x20 | 0x28 | 0x30 | 0x38 | 0xcb | 0xd9 | 0xdd | 0xed | 0xfd => {{\n")
+            o.write(f"{' ' * 4 * 4}{raw_opcode}::NOP\n{' ' * 4 * 3}}}\n{' ' * 4 * 3}_ => unsafe {{ std::mem::transmute(t) }},\n")
+            o.write(f"{' ' * 4 * 2}}}\n{' ' * 4}}}\n}}\n\n")
+
+            o.write(f"impl From<&u8> for {raw_opcode} {{\n")
+            o.write(f"{' ' * 4}fn from(t: &u8) -> {raw_opcode} {{\n")
+            o.write(f"{' ' * 4 * 2}From::from(*t)\n")
+            o.write(f"{' ' * 4}}}\n}}\n\n")
+
+            o.write(f"impl Into<u8> for {raw_opcode} {{\n")
+            o.write(f"{' ' * 4}fn into(self) -> u8 {{\n")
+            o.write(f"{' ' * 4 * 2}unsafe {{ std::mem::transmute(self) }}\n")
+            o.write(f"{' ' * 4}}}\n}}\n\n")
+
             o.write(f"impl fmt::Display for {raw_opcode} {{\n")
             o.write(
                 f"{' ' * 4}fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {{\n"
@@ -97,7 +114,7 @@ def main():
             f2.write(f"{' ' * 4 * 2}}});\n")
             f2.write(f"{' ' * 4}}}\n\n{' ' * 4}ops\n}}\n\n")
 
-            o.write("#[derive(Debug, Clone, Copy)]\n")
+            o.write("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
             o.write(f"pub enum {wrap_opcode} {{\n")
 
             f2.write(

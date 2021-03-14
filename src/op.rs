@@ -2,7 +2,7 @@ use std::fmt;
 
 #[allow(non_camel_case_types)]
 #[repr(u8)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RawOpcode {
     NOP = 0x00,
     LXI_B = 0x01,
@@ -250,6 +250,29 @@ pub enum RawOpcode {
     RST_7 = 0xff,
 }
 
+impl From<u8> for RawOpcode {
+    fn from(t: u8) -> RawOpcode {
+        match t {
+            0x08 | 0x10 | 0x18 | 0x20 | 0x28 | 0x30 | 0x38 | 0xcb | 0xd9 | 0xdd | 0xed | 0xfd => {
+                RawOpcode::NOP
+            }
+            _ => unsafe { std::mem::transmute(t) },
+        }
+    }
+}
+
+impl From<&u8> for RawOpcode {
+    fn from(t: &u8) -> RawOpcode {
+        From::from(*t)
+    }
+}
+
+impl Into<u8> for RawOpcode {
+    fn into(self) -> u8 {
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
 impl fmt::Display for RawOpcode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", *self as u8)
@@ -272,7 +295,7 @@ impl fmt::UpperHex for RawOpcode {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Opcode {
     Nop,
     LxiB(u8, u8),
