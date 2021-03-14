@@ -1321,7 +1321,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Shld(*b1, *b2)
+                Opcode::Shld(u16::from_le_bytes([*b1, *b2]))
             }
             0x23 => {
                 i += 1;
@@ -1352,7 +1352,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Lhld(*b1, *b2)
+                Opcode::Lhld(u16::from_le_bytes([*b1, *b2]))
             }
             0x2b => {
                 i += 1;
@@ -1383,7 +1383,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Sta(*b1, *b2)
+                Opcode::Sta(u16::from_le_bytes([*b1, *b2]))
             }
             0x33 => {
                 i += 1;
@@ -1414,7 +1414,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Lda(*b1, *b2)
+                Opcode::Lda(u16::from_le_bytes([*b1, *b2]))
             }
             0x3b => {
                 i += 1;
@@ -1961,19 +1961,19 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jnz(*b1, *b2)
+                Opcode::Jnz(u16::from_le_bytes([*b1, *b2]))
             }
             0xc3 => {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jmp(*b1, *b2)
+                Opcode::Jmp(u16::from_le_bytes([*b1, *b2]))
             }
             0xc4 => {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cnz(*b1, *b2)
+                Opcode::Cnz(u16::from_le_bytes([*b1, *b2]))
             }
             0xc5 => {
                 i += 1;
@@ -1999,19 +1999,19 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jz(*b1, *b2)
+                Opcode::Jz(u16::from_le_bytes([*b1, *b2]))
             }
             0xcc => {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cz(*b1, *b2)
+                Opcode::Cz(u16::from_le_bytes([*b1, *b2]))
             }
             0xcd => {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Call(*b1, *b2)
+                Opcode::Call(u16::from_le_bytes([*b1, *b2]))
             }
             0xce => {
                 i += 1;
@@ -2033,7 +2033,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jnc(*b1, *b2)
+                Opcode::Jnc(u16::from_le_bytes([*b1, *b2]))
             }
             0xd3 => {
                 i += 1;
@@ -2043,7 +2043,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cnc(*b1, *b2)
+                Opcode::Cnc(u16::from_le_bytes([*b1, *b2]))
             }
             0xd5 => {
                 i += 1;
@@ -2065,7 +2065,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jc(*b1, *b2)
+                Opcode::Jc(u16::from_le_bytes([*b1, *b2]))
             }
             0xdb => {
                 i += 1;
@@ -2075,7 +2075,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cc(*b1, *b2)
+                Opcode::Cc(u16::from_le_bytes([*b1, *b2]))
             }
             0xde => {
                 i += 1;
@@ -2097,7 +2097,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jpo(*b1, *b2)
+                Opcode::Jpo(u16::from_le_bytes([*b1, *b2]))
             }
             0xe3 => {
                 i += 1;
@@ -2107,7 +2107,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cpo(*b1, *b2)
+                Opcode::Cpo(u16::from_le_bytes([*b1, *b2]))
             }
             0xe5 => {
                 i += 1;
@@ -2133,7 +2133,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jpe(*b1, *b2)
+                Opcode::Jpe(u16::from_le_bytes([*b1, *b2]))
             }
             0xeb => {
                 i += 1;
@@ -2143,7 +2143,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cpe(*b1, *b2)
+                Opcode::Cpe(u16::from_le_bytes([*b1, *b2]))
             }
             0xee => {
                 i += 1;
@@ -2165,7 +2165,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jp(*b1, *b2)
+                Opcode::Jp(u16::from_le_bytes([*b1, *b2]))
             }
             0xf3 => {
                 i += 1;
@@ -2175,7 +2175,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cp(*b1, *b2)
+                Opcode::Cp(u16::from_le_bytes([*b1, *b2]))
             }
             0xf5 => {
                 i += 1;
@@ -2201,7 +2201,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Jm(*b1, *b2)
+                Opcode::Jm(u16::from_le_bytes([*b1, *b2]))
             }
             0xfb => {
                 i += 1;
@@ -2211,7 +2211,7 @@ pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
                 i += 3;
                 let b1 = bin.get(i - 2).ok_or(OpError(2))?;
                 let b2 = bin.get(i - 1).ok_or(OpError(1))?;
-                Opcode::Cm(*b1, *b2)
+                Opcode::Cm(u16::from_le_bytes([*b1, *b2]))
             }
             0xfe => {
                 i += 1;

@@ -151,7 +151,7 @@ def main():
                     op = op.replace("_D16", "(u8, u8)")
                     op = op.replace("__D8", "(u8)")
                     op = op.replace("_D8", "(u8)")
-                    op = op.replace("Adr", "(u8, u8)")
+                    op = op.replace("Adr", "(u16)")
 
                     op = op.replace("_B", "B")
                     op = op.replace("_C", "C")
@@ -166,9 +166,12 @@ def main():
 
                     op2 = op.replace("(u8, u8)", "(*b1, *b2)")
                     op2 = op2.replace("(u8)", "(*b1)")
+                    op2 = op2.replace("(u16)", "(u16::from_le_bytes([*b1, *b2]))")
 
                     f2.write(f"{' ' * 4 * 3}{m[0]} => {{\n{' ' * 4 * 4}i += ")
-                    if op2.endswith("(*b1, *b2)"):
+                    if op2.endswith("(*b1, *b2)") or op2.endswith(
+                        "(u16::from_le_bytes([*b1, *b2]))"
+                    ):
                         f2.write(
                             f"3;\n{' ' * 4 * 4}let b1 = bin.get(i - 2).ok_or({opcode_err}(2))?;"
                         )
