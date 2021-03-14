@@ -13,7 +13,7 @@ impl fmt::Display for OpError {
     }
 }
 
-pub fn disassemble_raw(bin: &Vec<u8>) -> Result<Vec<RawOpcode>, OpError> {
+pub fn disassemble_raw(bin: &[u8]) -> Result<Vec<RawOpcode>, OpError> {
     let mut ops = Vec::new();
 
     let mut i = 0;
@@ -1181,7 +1181,7 @@ pub fn disassemble_raw(bin: &Vec<u8>) -> Result<Vec<RawOpcode>, OpError> {
     Ok(ops)
 }
 
-pub fn disassemble(bin: &Vec<u8>) -> Result<Vec<Opcode>, OpError> {
+pub fn disassemble(bin: &[u8]) -> Result<Vec<Opcode>, OpError> {
     let mut ops = Vec::new();
 
     let mut i = 0;
