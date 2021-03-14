@@ -13,6 +13,7 @@ def main():
     op_input = "util/opcodes.txt"
     op_output = "src/op.rs"
     dis_output = "src/dis/mod.rs"
+    asm_output = "src/asm/mod.rs"
 
     with open(op_input) as f:
         match = comp.findall(f.read())
@@ -32,8 +33,8 @@ def main():
         with open(dis_output, "w") as f2:
             o.write(header.format(op_output, op_input))
             f2.write(header.format(dis_output, op_input))
-
             f2.write("use super::op::*;\nuse std::fmt;\n\n")
+
             f2.write("#[derive(Debug, Clone)]\n")
             f2.write(f"pub struct {opcode_err}(usize);\n\n")
             f2.write(f"impl fmt::Display for {opcode_err} {{\n")
@@ -250,6 +251,63 @@ def main():
 
         o.write(f"{' ' * 4 * 2}}}\n{' ' * 4}}}\n}}\n")
 
+    with open(asm_output, "w") as f:
+        f.write(header.format(asm_output, op_input))
+        f.write("use super::op::*;\n\n")
+
+        f.write(f"pub fn codegen(ops: &[{wrap_opcode}]) -> Vec<u8> {{\n")
+        f.write(f"{' ' * 4}let mut bin = Vec::new();\n\n")
+        f.write(f"{' ' * 4}let mut i = 0;\n")
+        f.write(f"{' ' * 4}while i < ops.len() {{\n")
+        f.write(f"{' ' * 4 * 2}match ops[i] {{\n")
+
+        for m in match:
+            if m[1] != "":
+                op = m[1].replace(" ", "_").replace(",", "_").lower()
+                op = humps.pascalize(op)
+
+                op = op.replace("__D16", "(b2, b1)")
+                op = op.replace("_D16", "(b2, b1)")
+                op = op.replace("__D8", "(b1)")
+                op = op.replace("_D8", "(b1)")
+                op = op.replace("Adr", "(s1)")
+
+                op = op.replace("_B", "B")
+                op = op.replace("_C", "C")
+                op = op.replace("_D", "D")
+                op = op.replace("_E", "E")
+                op = op.replace("_H", "H")
+                op = op.replace("_L", "L")
+                op = op.replace("_M", "M")
+                op = op.replace("_A", "A")
+
+                f.write(f"{' ' * 4 * 3}{wrap_opcode}::{op} => {{\n")
+                if op.endswith("(b2, b1)"):
+                    f.write(f"{' ' * 4 * 4}bin.push({m[0]}u8);\n")
+
+                    f.write(
+                        f"{' ' * 4 * 4}bin.push(b1);\n{' ' * 4 * 4}bin.push(b2);\n{' ' * 4 * 3}}}\n"
+                    )
+
+                elif op.endswith("(b1)"):
+                    f.write(f"{' ' * 4 * 4}bin.push({m[0]}u8);\n")
+
+                    f.write(f"{' ' * 4 * 4}bin.push(b1);\n{' ' * 4 * 3}}}\n")
+
+                elif op.endswith("(s1)"):
+                    f.write(f"{' ' * 4 * 4}bin.push({m[0]}u8);\n")
+
+                    f.write(f"{' ' * 4 * 4}let b = s1.to_le_bytes();\n")
+
+                    f.write(
+                        f"{' ' * 4 * 4}bin.push(b[0]);\n{' ' * 4 * 4}bin.push(b[1]);\n{' ' * 4 * 3}}}\n"
+                    )
+
+                else:
+                    f.write(f"{' ' * 4 * 4}bin.push({m[0]}u8);\n{' ' * 4 * 3}}}\n")
+
+        f.write(f"{' ' * 4 * 2}}}\n{' ' * 4 * 2}i += 1;\n")
+        f.write(f"{' ' * 4}}}\n\n{' ' * 4}bin\n}}\n")
 
 
 if __name__ == "__main__":
