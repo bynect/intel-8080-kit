@@ -18,8 +18,8 @@ fn main() {
 
             if raw {
                 if let Ok(out) = disassemble_raw(&bin) {
-                    out.iter().for_each(|&x| print!("{:02x} ", x));
-                    println!("\n{:?}", bin);
+                    out.iter().for_each(|&x| print!("{} ", x));
+                    println!("");
                 } else {
                     eprintln!("Erroneous binary file.");
                 }
