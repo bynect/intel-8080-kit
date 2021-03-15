@@ -3,6 +3,8 @@
 An Intel 8080 assembler and disassembler library crate written in Rust.
 This crate provides an assembler executable and a disassembler executable.
 
+The assembler currently supports only a subset of the Intel 8080 assembly language.
+
 ## Assembler example
 
 ```sh
