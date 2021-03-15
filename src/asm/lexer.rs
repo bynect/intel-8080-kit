@@ -1,5 +1,38 @@
 use super::Opcode;
 use std::collections::HashMap;
+use std::{num, str};
+
+trait NumFromStrRadix: Sized + PartialOrd + Ord + Eq {
+    type FromStrRadixErr;
+    fn from_str_radix(str: &str, radix: u32) -> Result<Self, Self::FromStrRadixErr>;
+}
+
+impl NumFromStrRadix for u8 {
+    type FromStrRadixErr = num::ParseIntError;
+    fn from_str_radix(str: &str, radix: u32) -> Result<Self, Self::FromStrRadixErr> {
+        Self::from_str_radix(str, radix)
+    }
+}
+impl NumFromStrRadix for u16 {
+    type FromStrRadixErr = num::ParseIntError;
+    fn from_str_radix(str: &str, radix: u32) -> Result<Self, Self::FromStrRadixErr> {
+        Self::from_str_radix(str, radix)
+    }
+}
+
+fn parse_prefix<T: NumFromStrRadix<FromStrRadixErr = num::ParseIntError> + str::FromStr>(
+    s: &str,
+) -> Result<T, ()> {
+    if let Some(s) = s.trim().strip_prefix("0x") {
+        T::from_str_radix(s, 16).or(Err(()))
+    } else if let Some(s) = s.strip_prefix("0o") {
+        T::from_str_radix(s, 8).or(Err(()))
+    } else if let Some(s) = s.strip_prefix("0b") {
+        T::from_str_radix(s, 2).or(Err(()))
+    } else {
+        s.parse::<T>().or(Err(()))
+    }
+}
 
 pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
     let mut out = Vec::new();
@@ -28,20 +61,20 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
     let mut defined = HashMap::new();
 
     let mut next_byte = |s: &str| {
-        if let Ok(v) = s.parse::<u8>() {
+        if let Ok(v) = parse_prefix(s) {
             v
         } else {
-            eprintln!("Expected byte instead of {}.", s);
+            eprintln!("Unrecognized literal byte instead of {}.", s);
             err2 = true;
             0u8
         }
     };
 
     let mut next_short = |s: &str| {
-        if let Ok(v) = s.parse::<u16>() {
+        if let Ok(v) = parse_prefix(s) {
             v
         } else {
-            eprintln!("Expected short instead of {}.", s);
+            eprintln!("Unrecognized literal short instead of {}.", s);
             err3 = true;
             0u16
         }
@@ -52,7 +85,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                         s: &str,
                         h: &mut HashMap<String, Vec<usize>>,
                         h2: &mut HashMap<String, u16>| {
-        if let Ok(v) = s.parse::<u16>() {
+        if let Ok(v) = parse_prefix(s) {
             v
         } else if s == "$" {
             pc - 3
@@ -1011,7 +1044,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
             }
         } else {
-            eprintln!("Use of undefined label {}.", k);
+            eprintln!("Use of undefined label ({}).", k);
             err = true;
         }
     }
