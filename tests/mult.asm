@@ -14,7 +14,7 @@ mult_00:
 mult_01:
 	rar
 	mov	b, a
-	jmp	mult_00
+	jmp	mult_00 ;this is a comment
 
 mult_end:
 	ret

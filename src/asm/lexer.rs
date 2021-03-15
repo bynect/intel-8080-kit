@@ -1,11 +1,22 @@
 use super::Opcode;
 use std::collections::HashMap;
 
-pub fn tokenize(s: &str) -> Result<Vec<Opcode>, ()> {
+pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
     let mut out = Vec::new();
 
     let mut err = false;
     let mut err2 = false;
+
+    let mut s = String::new();
+
+    for line in src.lines() {
+        if let Some(com) = line.find(';') {
+            s.push_str(&line[..com - 1]);
+        } else {
+            s.push_str(&line[..]);
+        }
+        s.push('\n');
+    }
 
     let mut words = s.split_ascii_whitespace();
 
