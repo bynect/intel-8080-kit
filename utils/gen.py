@@ -10,7 +10,7 @@ def main():
     comp = re.compile(r"^(0x[\da-f]+)	([\w \,]*)	(\d)", re.M | re.I)
     match = None
 
-    op_input = "util/opcodes.txt"
+    op_input = "utils/opcodes.txt"
     op_output = "src/op.rs"
     dis_output = "src/dis/mod.rs"
     asm_output = "src/asm/mod.rs"
