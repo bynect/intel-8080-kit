@@ -8,6 +8,8 @@ use std::{
     str,
 };
 
+const OUT_FILE: &str = "out.bin";
+
 fn main() {
     let args = env::args().collect::<Vec<_>>();
     let mut start = 1;
@@ -28,9 +30,9 @@ fn main() {
                 let ops = tokenize(&src).unwrap();
                 let bin = codegen(&ops);
 
-                let mut file = File::create("out.bin").unwrap();
+                let mut file = File::create(OUT_FILE).unwrap();
                 file.write(&bin).unwrap();
-                println!("Generated {} bytes from {}.", bin.len(), arg);
+                println!("Emitted {} bytes to {} from {}.", bin.len(), OUT_FILE, arg);
             } else {
                 if let Ok(sub) = Command::new("cpp").arg("-nostdinc").arg(path).output() {
                     if sub.status.success() {
@@ -39,9 +41,9 @@ fn main() {
                         if let Ok(ops) = tokenize(&src) {
                             let bin = codegen(&ops);
 
-                            let mut file = File::create("out.bin").unwrap();
+                            let mut file = File::create(OUT_FILE).unwrap();
                             file.write(&bin).unwrap();
-                            println!("Generated {} bytes from {}.", bin.len(), arg);
+                            println!("Emitted {} bytes to {} from {}.", bin.len(), OUT_FILE, arg);
                         }
                     } else {
                         if let Ok(stderr) = str::from_utf8(&sub.stderr) {
