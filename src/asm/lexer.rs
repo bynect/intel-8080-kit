@@ -6,6 +6,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
 
     let mut err = false;
     let mut err2 = false;
+    let mut err3 = false;
 
     let mut s = String::new();
 
@@ -36,20 +37,33 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
         }
     };
 
-    let next_short = |idx: usize,
-                      s: &str,
-                      h: &mut HashMap<String, Vec<usize>>,
-                      h2: &mut HashMap<String, usize>| {
+    let mut next_short = |s: &str| {
         if let Ok(v) = s.parse::<u16>() {
             v
+        } else {
+            eprintln!("Expected short instead of {}.", s);
+            err3 = true;
+            0u16
+        }
+    };
+
+    let next_address = |idx: usize,
+                        pc: u16,
+                        s: &str,
+                        h: &mut HashMap<String, Vec<usize>>,
+                        h2: &mut HashMap<String, u16>| {
+        if let Ok(v) = s.parse::<u16>() {
+            v
+        } else if s == "$" {
+            pc - 3
         } else if let Some(v) = h2.get(s) {
             *v as u16
         } else if let Some(vec) = h.get_mut(s) {
             vec.push(idx);
-            0
+            0u16
         } else {
             h.insert(s.into(), vec![idx]);
-            0
+            0u16
         }
     };
 
@@ -85,8 +99,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "shld" => {
                     pc += 3;
-                    out.push(Opcode::Shld(next_short(
+                    out.push(Opcode::Shld(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -98,8 +113,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "lhld" => {
                     pc += 3;
-                    out.push(Opcode::Lhld(next_short(
+                    out.push(Opcode::Lhld(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -111,8 +127,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "sta" => {
                     pc += 3;
-                    out.push(Opcode::Sta(next_short(
+                    out.push(Opcode::Sta(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -124,8 +141,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "lda" => {
                     pc += 3;
-                    out.push(Opcode::Lda(next_short(
+                    out.push(Opcode::Lda(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -145,8 +163,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jnz" => {
                     pc += 3;
-                    out.push(Opcode::Jnz(next_short(
+                    out.push(Opcode::Jnz(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -154,8 +173,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jmp" => {
                     pc += 3;
-                    out.push(Opcode::Jmp(next_short(
+                    out.push(Opcode::Jmp(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -163,8 +183,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cnz" => {
                     pc += 3;
-                    out.push(Opcode::Cnz(next_short(
+                    out.push(Opcode::Cnz(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -180,8 +201,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jz" => {
                     pc += 3;
-                    out.push(Opcode::Jz(next_short(
+                    out.push(Opcode::Jz(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -189,8 +211,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cz" => {
                     pc += 3;
-                    out.push(Opcode::Cz(next_short(
+                    out.push(Opcode::Cz(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -198,8 +221,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "call" => {
                     pc += 3;
-                    out.push(Opcode::Call(next_short(
+                    out.push(Opcode::Call(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -211,8 +235,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jnc" => {
                     pc += 3;
-                    out.push(Opcode::Jnc(next_short(
+                    out.push(Opcode::Jnc(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -220,8 +245,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cnc" => {
                     pc += 3;
-                    out.push(Opcode::Cnc(next_short(
+                    out.push(Opcode::Cnc(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -233,8 +259,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jc" => {
                     pc += 3;
-                    out.push(Opcode::Jc(next_short(
+                    out.push(Opcode::Jc(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -242,8 +269,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cc" => {
                     pc += 3;
-                    out.push(Opcode::Cc(next_short(
+                    out.push(Opcode::Cc(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -255,8 +283,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jpo" => {
                     pc += 3;
-                    out.push(Opcode::Jpo(next_short(
+                    out.push(Opcode::Jpo(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -268,8 +297,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cpo" => {
                     pc += 3;
-                    out.push(Opcode::Cpo(next_short(
+                    out.push(Opcode::Cpo(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -285,8 +315,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jpe" => {
                     pc += 3;
-                    out.push(Opcode::Jpe(next_short(
+                    out.push(Opcode::Jpe(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -298,8 +329,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cpe" => {
                     pc += 3;
-                    out.push(Opcode::Cpe(next_short(
+                    out.push(Opcode::Cpe(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -311,8 +343,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jp" => {
                     pc += 3;
-                    out.push(Opcode::Jp(next_short(
+                    out.push(Opcode::Jp(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -324,8 +357,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cp" => {
                     pc += 3;
-                    out.push(Opcode::Cp(next_short(
+                    out.push(Opcode::Cp(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -341,8 +375,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "jm" => {
                     pc += 3;
-                    out.push(Opcode::Jm(next_short(
+                    out.push(Opcode::Jm(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -354,8 +389,9 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cm" => {
                     pc += 3;
-                    out.push(Opcode::Cm(next_short(
+                    out.push(Opcode::Cm(next_address(
                         out.len(),
+                        pc,
                         words.next().unwrap(),
                         &mut labels,
                         &mut defined,
@@ -926,6 +962,18 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                         }
                     }
                 }
+                "org" => {
+                    let new_pc = next_short(words.next().unwrap());
+                    if let Some(diff) = new_pc.checked_sub(pc) {
+                        for _ in 0..diff {
+                            out.push(Opcode::Nop);
+                        }
+                        pc = new_pc;
+                    } else if !err {
+                        eprintln!("org operand overflows pc.");
+                        err = true;
+                    }
+                }
                 z => {
                     eprintln!("Unknown opcode ({}).", z);
                     err = true;
@@ -968,7 +1016,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
         }
     }
 
-    if err || err2 {
+    if err || err2 || err3 {
         Err(())
     } else {
         Ok(out)
