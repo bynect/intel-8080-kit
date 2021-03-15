@@ -54,7 +54,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
         s.push('\n');
     }
 
-    let mut words = s.split_ascii_whitespace();
+    let mut splitted = s.split_ascii_whitespace();
 
     let mut pc = 0;
     let mut labels = HashMap::new();
@@ -64,17 +64,17 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
         if let Ok(v) = parse_prefix(s) {
             v
         } else {
-            eprintln!("Unrecognized literal byte instead of {}.", s);
+            eprintln!("Expected literal byte instead of {}.", s);
             err2 = true;
             0u8
         }
     };
 
-    let mut next_short = |s: &str| {
+    let mut next_word = |s: &str| {
         if let Ok(v) = parse_prefix(s) {
             v
         } else {
-            eprintln!("Unrecognized literal short instead of {}.", s);
+            eprintln!("Expected literal word instead of {}.", s);
             err3 = true;
             0u16
         }
@@ -100,7 +100,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
         }
     };
 
-    while let Some(w) = words.next() {
+    while let Some(w) = splitted.next() {
         let w = w.to_ascii_lowercase();
 
         if w.ends_with(':') {
@@ -135,7 +135,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Shld(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -149,7 +149,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Lhld(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -163,7 +163,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Sta(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -177,7 +177,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Lda(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -199,7 +199,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jnz(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -209,7 +209,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jmp(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -219,7 +219,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cnz(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -237,7 +237,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jz(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -247,7 +247,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cz(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -257,7 +257,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Call(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -271,7 +271,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jnc(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -281,7 +281,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cnc(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -295,7 +295,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jc(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -305,7 +305,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cc(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -319,7 +319,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jpo(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -333,7 +333,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cpo(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -351,7 +351,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jpe(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -365,7 +365,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cpe(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -379,7 +379,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jp(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -393,7 +393,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cp(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -411,7 +411,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Jm(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -425,7 +425,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     out.push(Opcode::Cm(next_address(
                         out.len(),
                         pc,
-                        words.next().unwrap(),
+                        splitted.next().unwrap(),
                         &mut labels,
                         &mut defined,
                     )));
@@ -433,48 +433,48 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
 
                 "ani" => {
                     pc += 2;
-                    out.push(Opcode::Ani(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Ani(next_byte(splitted.next().unwrap())));
                 }
                 "adi" => {
                     pc += 2;
-                    out.push(Opcode::Adi(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Adi(next_byte(splitted.next().unwrap())));
                 }
                 "aci" => {
                     pc += 2;
-                    out.push(Opcode::Aci(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Aci(next_byte(splitted.next().unwrap())));
                 }
                 "out" => {
                     pc += 2;
-                    out.push(Opcode::Out(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Out(next_byte(splitted.next().unwrap())));
                 }
                 "sui" => {
                     pc += 2;
-                    out.push(Opcode::Sui(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Sui(next_byte(splitted.next().unwrap())));
                 }
                 "in" => {
                     pc += 2;
-                    out.push(Opcode::In(next_byte(words.next().unwrap())));
+                    out.push(Opcode::In(next_byte(splitted.next().unwrap())));
                 }
                 "sbi" => {
                     pc += 2;
-                    out.push(Opcode::Sbi(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Sbi(next_byte(splitted.next().unwrap())));
                 }
                 "xri" => {
                     pc += 2;
-                    out.push(Opcode::Xri(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Xri(next_byte(splitted.next().unwrap())));
                 }
                 "ori" => {
                     pc += 2;
-                    out.push(Opcode::Ori(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Ori(next_byte(splitted.next().unwrap())));
                 }
                 "cpi" => {
                     pc += 2;
-                    out.push(Opcode::Cpi(next_byte(words.next().unwrap())));
+                    out.push(Opcode::Cpi(next_byte(splitted.next().unwrap())));
                 }
 
                 "ldax" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::LdaxB),
@@ -487,23 +487,23 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "lxi" => {
                     pc += 3;
-                    let mut w2 = words.next().unwrap().trim();
+                    let mut w2 = splitted.next().unwrap().trim();
                     if let Some(w3) = w2.strip_suffix(',') {
                         w2 = w3.trim();
                     }
 
                     match w2 {
                         "b" => out.push(Opcode::LxiB(
-                            next_byte(words.next().unwrap()),
-                            next_byte(words.next().unwrap()),
+                            next_byte(splitted.next().unwrap()),
+                            next_byte(splitted.next().unwrap()),
                         )),
                         "d" => out.push(Opcode::LxiD(
-                            next_byte(words.next().unwrap()),
-                            next_byte(words.next().unwrap()),
+                            next_byte(splitted.next().unwrap()),
+                            next_byte(splitted.next().unwrap()),
                         )),
                         "h" => out.push(Opcode::LxiH(
-                            next_byte(words.next().unwrap()),
-                            next_byte(words.next().unwrap()),
+                            next_byte(splitted.next().unwrap()),
+                            next_byte(splitted.next().unwrap()),
                         )),
                         x => {
                             eprintln!("Unknown operand for lxi ({}).", x);
@@ -513,7 +513,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "stax" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::StaxB),
@@ -526,7 +526,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "pop" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::PopB),
@@ -541,7 +541,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "push" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::PushB),
@@ -556,7 +556,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "dad" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::DadB),
@@ -571,7 +571,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "inx" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::InxB),
@@ -586,7 +586,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "dcx" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::DcxB),
@@ -601,7 +601,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "inr" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::InrB),
@@ -620,7 +620,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "dcr" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::DcrB),
@@ -639,7 +639,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "add" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::AddB),
@@ -658,7 +658,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "adc" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::AdcB),
@@ -677,7 +677,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "sub" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::SubB),
@@ -696,7 +696,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "sbb" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::SbbB),
@@ -715,7 +715,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "ana" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::AnaB),
@@ -734,7 +734,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "xra" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::XraB),
@@ -753,7 +753,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "ora" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::OraB),
@@ -772,7 +772,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "cmp" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "b" => out.push(Opcode::CmpB),
@@ -791,14 +791,14 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "mov" => {
                     pc += 1;
-                    let mut w2 = words.next().unwrap().trim();
+                    let mut w2 = splitted.next().unwrap().trim();
                     if let Some(w3) = w2.strip_suffix(',') {
                         w2 = w3.trim();
                     }
 
                     match w2 {
                         "b" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovBB),
@@ -817,7 +817,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "c" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovCB),
@@ -836,7 +836,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "d" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovDB),
@@ -855,7 +855,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "e" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovEB),
@@ -874,7 +874,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "h" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovHB),
@@ -893,7 +893,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "l" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovLB),
@@ -912,7 +912,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "m" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovMB),
@@ -930,7 +930,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                             }
                         }
                         "a" => {
-                            let w3 = words.next().unwrap().trim();
+                            let w3 = splitted.next().unwrap().trim();
 
                             match w3 {
                                 "b" => out.push(Opcode::MovAB),
@@ -956,20 +956,20 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "mvi" => {
                     pc += 2;
-                    let mut w2 = words.next().unwrap().trim();
+                    let mut w2 = splitted.next().unwrap().trim();
                     if let Some(w3) = w2.strip_suffix(',') {
                         w2 = w3.trim();
                     }
 
                     match w2 {
-                        "b" => out.push(Opcode::MviB(next_byte(words.next().unwrap()))),
-                        "c" => out.push(Opcode::MviC(next_byte(words.next().unwrap()))),
-                        "d" => out.push(Opcode::MviD(next_byte(words.next().unwrap()))),
-                        "e" => out.push(Opcode::MviE(next_byte(words.next().unwrap()))),
-                        "h" => out.push(Opcode::MviH(next_byte(words.next().unwrap()))),
-                        "l" => out.push(Opcode::MviL(next_byte(words.next().unwrap()))),
-                        "m" => out.push(Opcode::MviM(next_byte(words.next().unwrap()))),
-                        "a" => out.push(Opcode::MviA(next_byte(words.next().unwrap()))),
+                        "b" => out.push(Opcode::MviB(next_byte(splitted.next().unwrap()))),
+                        "c" => out.push(Opcode::MviC(next_byte(splitted.next().unwrap()))),
+                        "d" => out.push(Opcode::MviD(next_byte(splitted.next().unwrap()))),
+                        "e" => out.push(Opcode::MviE(next_byte(splitted.next().unwrap()))),
+                        "h" => out.push(Opcode::MviH(next_byte(splitted.next().unwrap()))),
+                        "l" => out.push(Opcode::MviL(next_byte(splitted.next().unwrap()))),
+                        "m" => out.push(Opcode::MviM(next_byte(splitted.next().unwrap()))),
+                        "a" => out.push(Opcode::MviA(next_byte(splitted.next().unwrap()))),
                         x => {
                             eprintln!("Unknown operand for mvi ({}).", x);
                             err = true;
@@ -978,7 +978,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                 }
                 "rst" => {
                     pc += 1;
-                    let w2 = words.next().unwrap().trim();
+                    let w2 = splitted.next().unwrap().trim();
 
                     match w2 {
                         "0" => out.push(Opcode::Rst0),
@@ -996,7 +996,7 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
                     }
                 }
                 "org" => {
-                    let new_pc = next_short(words.next().unwrap());
+                    let new_pc = next_word(splitted.next().unwrap());
                     if let Some(diff) = new_pc.checked_sub(pc) {
                         for _ in 0..diff {
                             out.push(Opcode::Nop);
