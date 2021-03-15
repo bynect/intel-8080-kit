@@ -2,15 +2,17 @@ use asm_8080::dis::{disassemble, disassemble_raw};
 use std::{env, fs, path::Path};
 
 fn main() {
-    let mut args = env::args().collect::<Vec<_>>();
+    let args = env::args().collect::<Vec<_>>();
+    let mut start = 1;
+
     let raw = if args.len() > 1 && args[1] == "--raw" {
-        args.remove(1);
+        start += 1;
         true
     } else {
         false
     };
 
-    for arg in &args[1..] {
+    for arg in &args[start..] {
         let path = Path::new(&arg);
 
         if path.exists() {

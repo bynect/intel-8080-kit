@@ -10,8 +10,10 @@ pub fn tokenize(src: &str) -> Result<Vec<Opcode>, ()> {
     let mut s = String::new();
 
     for line in src.lines() {
-        if let Some(com) = line.find(';') {
-            s.push_str(&line[..com - 1]);
+        if let Some(com) = line.find('#') {
+            s.push_str(&line[..com]);
+        } else if let Some(com) = line.find(';') {
+            s.push_str(&line[..com]);
         } else {
             s.push_str(&line[..]);
         }
