@@ -1,4 +1,4 @@
-use asm_8080::{
+use intel_8080_kit::{
     asm::{codegen, lexer::tokenize},
     dis::{disassemble, disassemble_raw},
     op::{Opcode, RawOpcode},

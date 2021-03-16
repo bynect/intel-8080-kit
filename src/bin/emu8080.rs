@@ -1,4 +1,4 @@
-use asm_8080::emu::{Emulator, Memory};
+use intel_8080_kit::emu::{Emulator, Memory};
 use std::{
     env, fs,
     path::Path,

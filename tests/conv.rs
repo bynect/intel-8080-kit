@@ -1,4 +1,4 @@
-use asm_8080::op::RawOpcode;
+use intel_8080_kit::op::RawOpcode;
 
 #[test]
 fn raw_conversion() {

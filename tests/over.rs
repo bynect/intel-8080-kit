@@ -1,4 +1,4 @@
-use asm_8080::dis::{disassemble, disassemble_raw};
+use intel_8080_kit::dis::{disassemble, disassemble_raw};
 
 #[test]
 fn malformed_raw() {

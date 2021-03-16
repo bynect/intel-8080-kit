@@ -1,6 +1,6 @@
-# asm-8080
+# intel-8080-kit
 
-An Intel 8080 library crate written in Rust that provides an assembler, a disassembler and an emulator with example executables.
+An Intel 8080 library crate written in Rust that provides an assembler, a disassembler and an emulator with respective executables.
 
 The assembler currently supports only a subset of the Intel 8080 assembly language.
 
