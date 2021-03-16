@@ -121,12 +121,15 @@ def main():
             o.write(f"impl From<u8> for {raw_opcode} {{\n")
             o.write(f"{' ' * 4}fn from(t: u8) -> {raw_opcode} {{\n")
             o.write(f"{' ' * 4 * 2}match t {{\n")
+
+            o.write(f"{' ' * 4 * 3}// Undocumented ops\n")
             o.write(
-                f"{' ' * 4 * 3}0x08 | 0x10 | 0x18 | 0x20 | 0x28 | 0x30 | 0x38 | 0xcb | 0xd9 | 0xdd | 0xed | 0xfd => {{\n"
+                f"{' ' * 4 * 3}0x08 | 0x10 | 0x18 | 0x20 | 0x28 | 0x30 | 0x38 => RawOpcode::NOP,\n"
             )
-            o.write(
-                f"{' ' * 4 * 4}{raw_opcode}::NOP\n{' ' * 4 * 3}}}\n{' ' * 4 * 3}_ => unsafe {{ mem::transmute(t) }},\n"
-            )
+            o.write(f"{' ' * 4 * 3}0xd9 => RawOpcode::RET,\n")
+            o.write(f"{' ' * 4 * 3}0xdd | 0xed | 0xfd => RawOpcode::CALL,\n")
+            o.write(f"{' ' * 4 * 3}0xcb => RawOpcode::JMP,\n")
+            o.write(f"{' ' * 4 * 3}_ => unsafe {{ mem::transmute(t) }},\n")
             o.write(f"{' ' * 4 * 2}}}\n{' ' * 4}}}\n}}\n\n")
 
             o.write(f"impl From<&u8> for {raw_opcode} {{\n")

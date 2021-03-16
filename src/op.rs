@@ -507,9 +507,11 @@ impl RawOpcode {
 impl From<u8> for RawOpcode {
     fn from(t: u8) -> RawOpcode {
         match t {
-            0x08 | 0x10 | 0x18 | 0x20 | 0x28 | 0x30 | 0x38 | 0xcb | 0xd9 | 0xdd | 0xed | 0xfd => {
-                RawOpcode::NOP
-            }
+            // Undocumented ops
+            0x08 | 0x10 | 0x18 | 0x20 | 0x28 | 0x30 | 0x38 => RawOpcode::NOP,
+            0xd9 => RawOpcode::RET,
+            0xdd | 0xed | 0xfd => RawOpcode::CALL,
+            0xcb => RawOpcode::JMP,
             _ => unsafe { mem::transmute(t) },
         }
     }
