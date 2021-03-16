@@ -13,7 +13,7 @@ impl MemoryBase {
     }
 
     pub fn from_slice(base: &[u8]) -> Self {
-        let mut mem = Self([0; u16::MAX as usize]);
+        let mut mem = Self::new();
         for (i, v) in base.iter().enumerate() {
             mem.0[i] = *v;
         }
@@ -22,8 +22,12 @@ impl MemoryBase {
 }
 
 impl Memory for MemoryBase {
-    fn out_port(&self, _port: u8, _byte: u8) {}
-    fn in_port(&self, _port: u8) -> u8 {
+    fn out_port(&self, port: u8, byte: u8) {
+        println!("Output byte {} to port {}.", byte, port);
+    }
+
+    fn in_port(&self, port: u8) -> u8 {
+        println!("Input byte from port {}.", port);
         0
     }
 

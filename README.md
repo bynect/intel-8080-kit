@@ -7,8 +7,8 @@ The assembler currently supports only a subset of the Intel 8080 assembly langua
 ## Assembler example
 
 ```sh
-$ cargo run --bin asm8080 tests/mult.asm
-Emitted 22 bytes to out.bin from tests/mult.asm.
+$ cargo run --bin asm8080 tests/basic.asm
+Emitted 8 bytes to out.bin from tests/basic.asm.
 ```
 
 ## Disassembler example
@@ -16,18 +16,18 @@ Emitted 22 bytes to out.bin from tests/mult.asm.
 ```sh
 $ cargo run --bin dis8080 out.bin
 PC        OPCODE
-0000      MviB(0)
-0002      MviE(9)
-0004      MovAC
-0005      Rar
-0006      MovCA
-0007      DcrE
-0008      Jz(21)
-0011      MovAB
-0012      Jnc(16)
-0015      AddD
-0016      Rar
-0017      MovBA
-0018      Jmp(4)
-0021      Ret
+0000      In(0)
+0002      MviB(100)
+0004      AddB
+0005      Out(10)
+0007      Hlt
+```
+
+## Emulator example
+
+```sh
+$ cargo run --bin emu8080 out.bin
+Input byte from port 0.
+Output byte 100 to port 10.
+Execution of out.bin took 23.8µs.
 ```

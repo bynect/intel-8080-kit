@@ -84,9 +84,9 @@ impl Byte {
         (ones & 1) == 0
     }
 
-    pub fn bit_carry(&self, other: Byte, alredy: bool, bits: usize) -> bool {
-        let res = self.0 + other.0 + (alredy as u8);
-        let carry = res ^ self.0 ^ other.0;
+    pub fn bit_carry(&self, other: Byte, alredy: bool, bits: i32) -> bool {
+        let res = (self.0 as u16) + (other.0 as u16) + (alredy as u16);
+        let carry = res ^ (self.0 as u16) ^ (other.0 as u16);
 
         carry & (1 << bits) != 0
     }
