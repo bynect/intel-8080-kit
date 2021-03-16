@@ -1,5 +1,9 @@
 use asm_8080::emu::{Emulator, Memory};
-use std::{env, fs, path::Path};
+use std::{
+    env, fs,
+    path::Path,
+    time::{SystemTime, UNIX_EPOCH},
+};
 
 struct MemoryBase([u8; u16::MAX as usize]);
 
@@ -50,7 +54,12 @@ fn main() {
             let bin = fs::read(arg).unwrap();
             let mem = Box::new(MemoryBase::from_slice(&bin));
             let mut emu = Emulator::new(mem);
+
+            let start = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
             emu.run();
+            let end = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+
+            println!("Execution of {} took {:?}.", arg, (end - start))
         } else {
             eprintln!("{} doesn't exist.", arg);
         }

@@ -1,7 +1,6 @@
 # asm-8080
 
-An Intel 8080 assembler and disassembler library crate written in Rust.
-This crate provides an assembler executable and a disassembler executable.
+An Intel 8080 library crate written in Rust that provides an assembler, a disassembler and an emulator with example executables.
 
 The assembler currently supports only a subset of the Intel 8080 assembly language.
 
@@ -9,7 +8,7 @@ The assembler currently supports only a subset of the Intel 8080 assembly langua
 
 ```sh
 $ cargo run --bin asm8080 tests/mult.asm
-Generated 22 bytes from tests/mult.asm.
+Emitted 22 bytes to out.bin from tests/mult.asm.
 ```
 
 ## Disassembler example

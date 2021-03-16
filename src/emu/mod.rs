@@ -300,8 +300,6 @@ impl Emulator {
             self.int.delay.0 -= 1;
         }
 
-        println!("{:?}", super::op::RawOpcode::from(op));
-
         match op {
             0x00 => {}
             0x01 => {
