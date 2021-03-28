@@ -1,12 +1,16 @@
 [package]
 name = "intel-8080-kit"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["bynect <68197565+bynect@users.noreply.github.com>"]
 edition = "2018"
 license = "MIT"
-include = ["src/", "LICENSE", "README.md"]
 readme = "README.md"
+include = ["src/**/*", "Cargo.toml", "LICENSE", "README.md"]
 repository = "https://github.com/bynect/intel-8080-kit"
 description = """
 An Intel 8080 library crate written in Rust that provides an assembler, a disassembler and an emulator with example executables.
 """
+keywords = ["intel8080", "asm", "assembler", "disassebler", "8080"]
+categories = ["compilers", "emulators", "development-tools"]
+
+[dependencies]
